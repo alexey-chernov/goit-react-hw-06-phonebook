@@ -1,13 +1,16 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addContact } from '../../redux/contacts/actions';
 import styles from './FormContacts.module.css';
 import InputMask from 'react-input-mask';
+import { getContacts } from '../../redux/contacts/selectors';
 
 function ContactForm() {
   const dispatch = useDispatch();
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
+
+  const contacts = useSelector(getContacts);
 
   const handleChange = event => {
     const { name, value } = event.target;
@@ -27,9 +30,16 @@ function ContactForm() {
   };
 
   const handleSubmit = event => {
-    event.preventDefault();
-    dispatch(addContact(name, number));
-    resetForm();
+    const found = contacts.find(
+      contact => contact.name.toLowerCase() === name.toLowerCase(),
+    );
+    if (found === undefined) {
+      event.preventDefault();
+      dispatch(addContact(name, number));
+      resetForm();
+    } else {
+      alert(`${name} вже присутній у списку контактів`);
+    }
   };
 
   const resetForm = () => {
