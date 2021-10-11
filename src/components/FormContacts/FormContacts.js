@@ -30,11 +30,11 @@ function ContactForm() {
   };
 
   const handleSubmit = event => {
+    event.preventDefault();
     const found = contacts.find(
       contact => contact.name.toLowerCase() === name.toLowerCase(),
     );
     if (found === undefined) {
-      event.preventDefault();
       dispatch(addContact(name, number));
       resetForm();
     } else {
